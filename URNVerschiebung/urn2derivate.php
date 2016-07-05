@@ -5,7 +5,7 @@
  * 
  *   Autor: Paul.Borchert@gbv.de
  *
- * Mit Hilfe eines Solrquery werden alle Dokumente ermittelt deren URN übertragen werden soll. 
+ * Mit Hilfe eines Solrquery werden alle Dokumente ermittelt deren URN Ã¼bertragen werden soll. 
  * Derzeit werden die Daten aus einem Verzeichniss gelesen, in dem die Daten vorher exportiert werden mussten.
  * 
  */
@@ -126,7 +126,7 @@ foreach ($Response["response"]["docs"] as $Doc) {
   }
   
 }
-file_put_contents("commnands.txt",$Commands);
+file_put_contents("commands.txt",$Commands);
 ?>
 Die Dateien liegen nun in import/
 
