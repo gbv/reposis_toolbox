@@ -10,10 +10,10 @@
  * 
  */
 
-$MIRBASEURL="https://ub-deposit.fernuni-hagen.de/";
+$MIRBASEURL="http://esx-171.gbv.de/clausthal2/";
 
 $SEARCHBASEURL=$MIRBASEURL."servlets/solr/select";
-$SEARCHBASEURL="http://esx-127.gbv.de:8081/solr/hagen/select";
+//$SEARCHBASEURL="http://esx-127.gbv.de:8081/solr/hagen/select";
 
 $SOLRQUERY = "q=identifier.type.urn%3A*";
 $SOLRPARMS = "&rows=4000&fl=id%2C+identifier.type.urn%2C+derivates&wt=json&indent=true";
@@ -50,8 +50,6 @@ $Commands = "";
 
 foreach ($Response["response"]["docs"] as $Doc) {
 
-  
-  $DerivateID = $Doc["derivates"][0];
   $ObjectID = $Doc["id"];
   
   // Ermitteln der URN 
@@ -59,15 +57,51 @@ foreach ($Response["response"]["docs"] as $Doc) {
   
   // Wenn es eine URN Gibt, dann trage sie in das Derivate ein
   if ($URN) {
-
-    echo "Verschiebe URN (".$URN.")".$ObjectID."->".$DerivateID."\n";
+    echo "Verschiebe URN (".$URN.")".$ObjectID;
+    if (! isset ($Doc["derivates"])){
+      echo "-> kein Derivate gefunden.\n";
+      continue;
+    } else if (count ($Doc["derivates"]) == 1) {
+      $DerivateID = $Doc["derivates"][0];
+      echo "->".$DerivateID."\n";
+    } else {
+      echo "\n  mehr als ein derivate: ".count ($Doc["derivates"])."(".$ObjectID.")\n";
+      $DerivateID="";
+      $DerivateFilename="";
+      foreach ($Doc["derivates"] as $derivate) {
+        echo "   ".$derivate." -> ";
+        $Filename=$derivate.".xml";
+        $Filepath="export/derivate/".$Filename;
+        if (is_file ($Filepath)) {
+          $XML = new DOMDocument();
+          $XML->load($Filepath);
+          $xpath = new DOMXpath($XML);
+          $elements = $xpath->query("/mycorederivate/derivate/internals/internal");
+          if ($elements->length==1) {
+            $element=$elements->item(0);
+            $Maindoc=$element->getAttribute("maindoc");
+            echo $Maindoc;
+          } else { 
+            die ("mehr als ein maindoc im derivate");
+          }
+          echo "\n";
+          if (strlen($Maindoc) < strlen($DerivateFilename) || $DerivateFilename==""){
+            $DerivateID=$derivate;
+            $DerivateFilename=$Maindoc;
+	  }
+        }
+      }
+      echo "    -> ausgewaehlt:".$DerivateID."\n";
+    }
 
     $Filename=$DerivateID.".xml";
 
     $Filepath="export/derivate/".$Filename;
  
     if (is_file ($Filepath)) {
-      
+
+      $copyderivate=true;      
+
       $XML = new DOMDocument();
       $XML->load($Filepath);
       $xpath = new DOMXpath($XML);
@@ -77,7 +111,13 @@ foreach ($Response["response"]["docs"] as $Doc) {
       }
       if ($elements->length==1) {
         $element=$elements->item(0);
-        $element->setAttribute("urn",$URN);
+        if ($element->getAttribute("urn")==$URN) {
+          echo "  URN war schon im derivate gespeichert.\n";
+          $copyderivate =false;
+        } else { 
+          echo "  ueberschreibe URN ".$element->getAttribute("urn")."mit ".$URN."\n";
+          $element->setAttribute("urn",$URN);
+        }
       }
       if ($elements->length==0) {
         $Derivate=$XML->getElementsByTagName('derivate')->item(0);
@@ -89,11 +129,12 @@ foreach ($Response["response"]["docs"] as $Doc) {
         //$File->setAttribute("name",$Maindoc);
         //$Fileset->appendChild($File);
       } 
-      
-      $SaveFilepath="import/derivate/".$Filename;
-      file_put_contents($SaveFilepath, $XML->saveXML());
-      shell_exec("cp -r export/derivate/".$DerivateID." import/derivate/");
-      $Commands.="delete derivate ".$DerivateID."\n"; 
+      if ($copyderivate) {
+        $SaveFilepath="import/derivate/".$Filename;
+        file_put_contents($SaveFilepath, $XML->saveXML());
+        shell_exec("cp -r export/derivate/".$DerivateID." import/derivate/");
+        $Commands.="delete derivate ".$DerivateID."\n"; 
+      }
     } else {
       echo "Error:Derivatedatei nicht gefunden.(".$Filename.")\n";
     }
@@ -132,7 +173,12 @@ Die Dateien liegen nun in import/
 
 Nachfolgende Schritte:
 
-- update der Derivate
-
 - update der mods-Objekte
+  mir.sh update all objects from directory import/objects/
+
+- loeschen der Derivate mit Hilfe der Datei commands.txt
+  mir.sh process commands.txt
+
+- neu laden der Derivate
+  mir.sh load all derivates from directory import/derivate
  
