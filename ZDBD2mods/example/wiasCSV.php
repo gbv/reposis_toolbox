@@ -9,9 +9,9 @@ if ($handle) {
     echo "<ZDBD2modsImport>\n";
     while (($data = fgetcsv($handle, 0, ";")) !== false) {
         echo '  <journal>'."\n";
-        echo '    <title>'.$data[0].'</title>'."\n";
-        echo '    <issn type="print">'.$data[1].'</title>'."\n";
-        echo '    <issn type="online">'.$data[2].'</title>'."\n";
+        echo '    <title>'.htmlspecialchars($data[0]).'</title>'."\n";
+        echo '    <issn type="print">'.$data[1].'</issn>'."\n";
+        echo '    <issn type="online">'.$data[2].'</issn>'."\n";
         echo '  </journal>'."\n";
     }
     echo "</ZDBD2modsImport>"."\n";
