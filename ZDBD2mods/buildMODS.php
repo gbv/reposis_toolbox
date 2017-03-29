@@ -28,6 +28,7 @@ if ($argc != 1 || in_array($argv[1], array('--help', '-help', '-h', '-?','help')
     foreach($files as $file) {
         //do your work here
         $rdf=file_get_contents("cache/".$file);
+        echo $rdf;
         $rdf_xml = new SimpleXMLElement($rdf);
         
         $mods=$proc->transformToXML($rdf_xml);
