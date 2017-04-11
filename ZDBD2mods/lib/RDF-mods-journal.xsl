@@ -35,6 +35,7 @@
       </mods:identifier>
       <mods:genre type="intern" authorityURI="http://www.mycore.org/classifications/mir_genres" valueURI="http://www.mycore.org/classifications/mir_genres#journal"/>
       <mods:typeOfResource>text</mods:typeOfResource>
+      <mods:accessCondition type="use and reproduction" xlink:href="http://www.mycore.org/classifications/mir_licenses#rights_reserved" xlink:type="simple"/>
     </mods:mods>
   </xsl:template>
   <xsl:template match="dc:title">
