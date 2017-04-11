@@ -43,7 +43,7 @@ if ($argc != 1 || in_array($argv[1], array('--help', '-help', '-h', '-?','help')
         $mods=str_replace('www.w3.org/1999/xlink">',$str,$mods);
         
         file_put_contents($modsfile,$mods);
-        $count++;
+        
     } 
     
 
