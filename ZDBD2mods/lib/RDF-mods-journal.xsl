@@ -4,7 +4,7 @@
   xmlns:foaf="http://xmlns.com/foaf/0.1/" xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:dc="http://purl.org/dc/elements/1.1/"
   xmlns:dcterms="http://purl.org/dc/terms/" xmlns:zdb="http://ld.zdb-services.de/resource/" xmlns:dnb_intern="http://dnb.de/"
   xmlns:isbd="http://iflastandards.info/ns/isbd/elements/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" exclude-result-prefixes="rdf bibo foaf owl dc dcterms zdb dnb_intern isbd rdfs">
-  <xsl:include href="xslInclude:RDF-mods-journal"/>
+  <!-- <xsl:include href="xslInclude:RDF-mods-journal"/>  -->
   <xsl:template match="/rdf:RDF">
     <mycoreobject>
       <metadata>
@@ -33,6 +33,8 @@
       <mods:identifier type="zdbid">
         <xsl:value-of select="substring-after(@rdf:about, 'http://ld.zdb-services.de/resource/')" />
       </mods:identifier>
+      <mods:genre type="intern" authorityURI="http://www.mycore.org/classifications/mir_genres" valueURI="http://www.mycore.org/classifications/mir_genres#journal"/>
+      <mods:typeOfResource>text</mods:typeOfResource>
     </mods:mods>
   </xsl:template>
   <xsl:template match="dc:title">

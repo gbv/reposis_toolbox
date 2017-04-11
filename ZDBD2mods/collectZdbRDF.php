@@ -56,19 +56,19 @@ while($xml->next("journal")) {
     
     if ( $success===false && ($issn_print || $issn_online)) {
         logging ( "  Try to get rdf by issn (".$issn_print.",".$issn_online.") \n");
-        if ($success = downloadRDFbyISSN($issn_print,$issn_online))  {
+        if ($success = downloadRDFbyISSN($issn_print,$issn_online,$title))  {
             continue;
         } 
     } 
     
     if ( $success===false && ($title)) {
-        logging ( "  Try to get rdf by title ");
+        logging ( "  Try to get rdf by title \n");
         if ($success = downloadRDFbyTitle($title))  {
             continue;
         }
     }
     
-    logging ( "  Fail: can't  get Journal from ZDB. \n");
+    logging ( "  Can't  get Journal from ZDB. \n");
     array_push($unprocessedJournals,$xmlJornal);
     
 }
