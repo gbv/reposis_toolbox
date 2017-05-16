@@ -5,7 +5,7 @@
   xmlns:dcterms="http://purl.org/dc/terms/" xmlns:zdb="http://ld.zdb-services.de/resource/" xmlns:dnb_intern="http://dnb.de/"
   xmlns:isbd="http://iflastandards.info/ns/isbd/elements/" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" exclude-result-prefixes="rdf bibo foaf owl dc dcterms zdb dnb_intern isbd rdfs">
   
-  <xsl:include href="RDF-mods-journal-mir.xsl"/>
+  <xsl:include href="RDF-mods-journal-mir.xsl"/> 
   
   <xsl:template match="/rdf:RDF">
     <mycoreobject>
@@ -24,7 +24,7 @@
   <xsl:template match="rdf:Description">
     <mods:mods>
       <!-- process input in deterministic order as editor forms depend on it -->
-      <xsl:apply-templates select="@rdf:type" />
+      <xsl:apply-templates select="rdf:type" />
       <xsl:apply-templates select="dc:title" />
       <xsl:apply-templates select="isbd:p1005|isbd:P1005" />
       <xsl:apply-templates select="bibo:shortTitle" />
@@ -80,7 +80,7 @@
       <xsl:value-of select="." />
     </mods:identifier>
   </xsl:template>
-  <xsl:template match="@rdf:type">
+  <xsl:template match="rdf:type">
     <xsl:message>
       <xsl:value-of select="'Configure MCR.URIResolver.xslIncludes.RDF-mods-journal and overwrite template for @rdf:type.'"/>
     </xsl:message>
