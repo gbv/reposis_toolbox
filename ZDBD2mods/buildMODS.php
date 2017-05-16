@@ -23,18 +23,20 @@ if ($argc != 1 || in_array($argv[1], array('--help', '-help', '-h', '-?','help')
     $xslDoc = new DOMDocument();
     $xslDoc->load("lib/RDF-mods-journal.xsl");
     $proc = new XSLTProcessor();
-    $proc->importStylesheet($xslDoc);
+    if ( ! $proc->importStylesheet($xslDoc)) {
+        die ("Error while creating XSLTProcessor\n");
+    }
     $files = glob("cache/*.rdf");
     $count=0;
     foreach($files as $file) {
         
         do {
             $count++;
-            $id="zimport_mods_".sprintf('%08d', $count);
-            $modsfile="mods/".$id.".xml";
+            $id = "zimport_mods_".sprintf('%08d', $count);
+            $modsfile = "mods/".$id.".xml";
         } while (is_file($modsfile));
         
-        $rdf=file_get_contents($file);
+        $rdf = file_get_contents($file);
         $rdf_xml = new SimpleXMLElement($rdf);
         $mods=$proc->transformToXML($rdf_xml);
         
