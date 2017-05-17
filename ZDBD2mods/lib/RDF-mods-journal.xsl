@@ -47,7 +47,7 @@
   </xsl:template>
   
   <xsl:template match="dc:title">
-    <mods:titleInfo altRepGroup="1" xlink:type="simple">
+    <mods:titleInfo>
       <mods:title>
         <xsl:value-of select="." />
       </mods:title>
