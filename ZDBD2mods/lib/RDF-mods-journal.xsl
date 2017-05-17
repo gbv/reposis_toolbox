@@ -21,6 +21,9 @@
       </service>
     </mycoreobject>
   </xsl:template>
+  
+  <xsl:key name="kIssn" match="bibo:issn" use="text()"/>
+  
   <xsl:template match="rdf:Description">
     <mods:mods>
       <!-- process input in deterministic order as editor forms depend on it -->
@@ -34,7 +37,7 @@
           <xsl:apply-templates select="isbd:p1016|isbd:P1016" />
         </mods:originInfo>
       </xsl:if>
-      <xsl:apply-templates select="bibo:issn" />
+      <xsl:apply-templates select="bibo:issn[generate-id() = generate-id(key('kIssn', text())[1])]" />
       <mods:identifier type="zdbid">
         <xsl:value-of select="substring-after(@rdf:about, 'http://ld.zdb-services.de/resource/')" />
       </mods:identifier>
@@ -42,6 +45,7 @@
       <mods:accessCondition type="use and reproduction" xlink:href="http://www.mycore.org/classifications/mir_licenses#rights_reserved" xlink:type="simple"/>
     </mods:mods>
   </xsl:template>
+  
   <xsl:template match="dc:title">
     <mods:titleInfo altRepGroup="1" xlink:type="simple">
       <mods:title>
