@@ -5,6 +5,7 @@ $CSVFILE=__DIR__."/Journals_WIAS.csv";
 
 $handle = fopen($CSVFILE, "r");
 if ($handle) {
+	$data = fgetcsv($handle, 0, ";");
     echo '<?xml version="1.0" encoding="UTF-8"?> '."\n";
     echo "<ZDBD2modsImport>\n";
     while (($data = fgetcsv($handle, 0, ";")) !== false) {
