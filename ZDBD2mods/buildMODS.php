@@ -9,7 +9,7 @@
 
 */
 
-if ($argc != 1 || in_array($argv[1], array('--help', '-help', '-h', '-?','help'))) {
+if ($argc != 1 /*|| in_array($argv[1], array('--help', '-help', '-h', '-?','help'))*/) {
 
 ?>
   Usage:
