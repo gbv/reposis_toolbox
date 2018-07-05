@@ -126,7 +126,7 @@ function downloadRDFbyISSN($issn_print,$issn_online,$title) {
 }
 
 function getZDBIDbyTitle (& $zdbdids , $title) {
-    $url_sru="http://services.d-nb.de/sru/zdb?version=1.1&operation=searchRetrieve&query=tit%3D".$title."&recordSchema=RDFxml";
+    $url_sru="http://services.d-nb.de/sru/zdb?version=1.1&operation=searchRetrieve&query=tst%3D".rawurlencode($title)."&recordSchema=RDFxml";
     $rdf=file_get_contents ($url_sru);
     if ($rdf) {
         if (preg_match_all('/<rdf:Description rdf:about=\"http:\/\/ld.zdb-services.de\/resource\/(.+)\">/', $rdf, $match)) {
