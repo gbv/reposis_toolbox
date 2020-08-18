@@ -33,13 +33,14 @@ function downloadRDFbyZDBDID ($zdbdid) {
 
 function getRecordsByISSN (& $records , $issn) {
     $url_sru="http://services.d-nb.de/sru/zdb?version=1.1&operation=searchRetrieve&query=iss%3D".$issn."&recordSchema=RDFxml";
+    logging ( "  getRecordsByISSN - SRU Call:".$url_sru."\n");
     $rdf=file_get_contents ($url_sru);
     if ($rdf) { 
         $rdf = trim(preg_replace('/\s+/', ' ', $rdf));
         if (preg_match_all('/<record>.*?<\/record>/', $rdf, $match)) {
             //print_r ($match);
             foreach ($match[0] as $record) {
-                if (!preg_match('/'.$issn.'/i', $record,$match2)) {
+                if (!preg_match('/'.$issn.'/i', $record, $match2)) {
                     continue;
                 }
                 array_push($records, $record);
@@ -49,7 +50,7 @@ function getRecordsByISSN (& $records , $issn) {
 }
 
 function getZDBIDfromRecord($record) {
-    if (preg_match('/<rdf:Description rdf:about=\"http:\/\/ld.zdb-services.de\/resource\/(.+?)\">/', $record, $match2)) {
+    if (preg_match('/<rdf:Description rdf:about=\"https:\/\/ld.zdb-services.de\/resource\/(.+?)\">/', $record, $match2)) {
         return($match2[1]);
     }
     return null;
@@ -99,12 +100,21 @@ function getUniqueZDBIDsFromRecords($records) {
 function downloadRDFbyISSN($issn_print,$issn_online,$title) {
     
     $records = array();
-    getRecordsByISSN($records,$issn_print);
-    getRecordsByISSN($records,$issn_online);
+    if (isset ($issn_print) && $issn_print != "") getRecordsByISSN($records,$issn_print);
+    if (isset ($issn_online) && $issn_online != "") getRecordsByISSN($records,$issn_online);
     
     $zdbdids = array();
+    if (count($records) == 0 ) {
+        logging ( "    Fail: get no records from SRU search\n");
+        return;
+    }
     $filtRecords = $records;
+    
     $zdbdids = getUniqueZDBIDsFromRecords($filtRecords);
+    if (count ($filtRecords) != count ($zdbdids)) {
+        logging ( "    Fail: Can't parse zdbid from xml. (pos formatchange) \n");
+        return;
+    }
     
     if ( (count($zdbdids) == 0)  || (2 < count($zdbdids))) $filtRecords=filterRecordsByTitle($records,$title);
     $zdbdids = getUniqueZDBIDsFromRecords($filtRecords);
