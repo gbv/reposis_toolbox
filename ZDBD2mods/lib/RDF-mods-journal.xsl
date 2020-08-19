@@ -39,7 +39,7 @@
       </xsl:if>
       <xsl:apply-templates select="bibo:issn[generate-id() = generate-id(key('kIssn', text())[1])]" />
       <mods:identifier type="zdbid">
-        <xsl:value-of select="substring-after(@rdf:about, 'http://ld.zdb-services.de/resource/')" />
+        <xsl:value-of select="substring-after(@rdf:about, 'https://ld.zdb-services.de/resource/')" />
       </mods:identifier>
       <mods:typeOfResource>text</mods:typeOfResource>
       <mods:accessCondition type="use and reproduction" xlink:href="http://www.mycore.org/classifications/mir_licenses#rights_reserved" xlink:type="simple"/>

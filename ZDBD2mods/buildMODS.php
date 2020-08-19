@@ -21,7 +21,7 @@ if ($argc != 1 /*|| in_array($argv[1], array('--help', '-help', '-h', '-?','help
 } else {
 
     $xslDoc = new DOMDocument();
-    $xslDoc->load("lib/RDF-mods-journal.xsl");
+    $xslDoc->load("lib/RDF-mods-journal-ubo.xsl");
     $proc = new XSLTProcessor();
     if ( ! $proc->importStylesheet($xslDoc)) {
         die ("Error while creating XSLTProcessor\n");
