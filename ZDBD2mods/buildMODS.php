@@ -8,18 +8,21 @@
 
 
 */
+$prefix = "zimport";
 
-if ($argc != 1 /*|| in_array($argv[1], array('--help', '-help', '-h', '-?','help'))*/) {
+if ($argc > 2 || in_array($argv[1], array('--help', '-help', '-h', '-?','help'))) {
 
 ?>
   Usage:
   ./build-mods.php or php -f build-mods.php
 
-
+  ./build-mods.php <prefix>
 
 <?php
 } else {
-
+    if ($argc == 2) {
+        $prefix = $argv[1];
+    }
     $xslDoc = new DOMDocument();
     $xslDoc->load("lib/RDF-mods-journal-ubo.xsl");
     $proc = new XSLTProcessor();
@@ -32,7 +35,7 @@ if ($argc != 1 /*|| in_array($argv[1], array('--help', '-help', '-h', '-?','help
         
         do {
             $count++;
-            $id = "zimport_mods_".sprintf('%08d', $count);
+            $id = $prefix."_mods_".sprintf('%08d', $count);
             $modsfile = "mods/".$id.".xml";
         } while (is_file($modsfile));
         
